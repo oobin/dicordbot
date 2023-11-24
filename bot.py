@@ -21,7 +21,7 @@ def main():
             response = openai.chat.completions.create(
                 model="gpt-3.5-turbo",
                 messages=[{"role": "user", "content": message.content}],
-                max_tokens=512,
+                max_tokens=256,
                 temperature=0.2,
                 frequency_penalty=0,
                 presence_penalty=0,
