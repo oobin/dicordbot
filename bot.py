@@ -1,12 +1,13 @@
 import os
 from dotenv import load_dotenv
 import discord
-import openai
+from openai import OpenAI
 
 
 def main():
     load_dotenv()
     bot = discord.Client(command_prefix="!", intents=discord.Intents.all())
+    ai_client = OpenAI()
 
     @bot.event
     async def on_ready():
@@ -18,11 +19,11 @@ def main():
             return
 
         if bot.user in message.mentions:
-            response = openai.chat.completions.create(
+            response = ai_client.chat.completions.create(
                 model="gpt-3.5-turbo",
                 messages=[{"role": "user", "content": message.content}],
                 max_tokens=256,
-                temperature=0.2,
+                temperature=0.5,
                 frequency_penalty=0,
                 presence_penalty=0,
             )
