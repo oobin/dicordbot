@@ -1,17 +1,25 @@
 import os
+import time
 
 import discord
 from dotenv import load_dotenv
 from openai import OpenAI
 
 # ChatGPT options
-MAX_TOKENS = 512
+MAX_TOKENS = 720
 TEMPERATURE = 0.5
 FREQUENCY_PENALTY = 0
 PRESENCE_PENALTY = 0
 
 # limits how long the prompt can be
 MAX_CONTEXT_QUESTIONS = 5
+
+
+def split_by_n(seq, n):
+    """A generator to divide a sequence into chunks of n units."""
+    while seq:
+        yield seq[:n]
+        seq = seq[n:]
 
 
 def main():
@@ -44,7 +52,13 @@ def main():
                     presence_penalty=PRESENCE_PENALTY,
                 )
 
-                await message.channel.send(response.choices[0].message.content)
+                chatgpt_response = response.choices[0].message.content
+                response_list = list(split_by_n(chatgpt_response, 2000))
+
+                for entry in response_list:
+                    await message.channel.send(entry)
+                    time.sleep(1)
+
                 if len(conversation) >= MAX_CONTEXT_QUESTIONS:
                     conversation.pop(0)
                 conversation.append(
