@@ -13,6 +13,7 @@ PRESENCE_PENALTY = 0
 
 # limits how long the prompt can be
 MAX_CONTEXT_QUESTIONS = 5
+INSTRUCTIONS = "you are a german sassy panzer woman"
 
 
 def split_by_n(seq, n):
@@ -27,7 +28,8 @@ def main():
     intents = discord.Intents.all()
     bot = discord.Client(command_prefix="!", intents=intents)
     ai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-    conversation = []
+    # conversation = [{"role": "system", "content": ""}]
+    conversation = [{"role": "system", "content": INSTRUCTIONS}]
 
     @bot.event
     async def on_ready():
@@ -41,7 +43,7 @@ def main():
         if bot.user in message.mentions:
             async with message.channel.typing():
                 if len(conversation) >= MAX_CONTEXT_QUESTIONS:
-                    conversation.pop(0)
+                    conversation.pop(1)
                 message_content = message.content.lstrip("<@0123456789> ")
                 conversation.append({"role": "user", "content": message_content})
                 response = ai_client.chat.completions.create(
@@ -61,7 +63,7 @@ def main():
                     time.sleep(1)
 
                 if len(conversation) >= MAX_CONTEXT_QUESTIONS:
-                    conversation.pop(0)
+                    conversation.pop(1)
                 conversation.append(
                     {
                         "role": response.choices[0].message.role,
