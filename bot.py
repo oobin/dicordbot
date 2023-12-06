@@ -10,6 +10,7 @@ def main():
     intents = discord.Intents.all()
     bot = discord.Client(command_prefix="!", intents=intents)
     ai_client = OpenAI()
+    dev_mode = os.getenv("DEV_MODE")
 
     @bot.event
     async def on_ready():
@@ -32,7 +33,10 @@ def main():
 
             await message.channel.send(response.choices[0].message.content)
 
-    bot.run(os.getenv("DISCORD_TOKEN"))  # type: ignore
+    if dev_mode:
+        bot.run(os.getenv("DISCORD_DEV_TOKEN"))  # type: ignore
+    else:
+        bot.run(os.getenv("DISCORD_TOKEN"))  # type: ignore
 
 
 if __name__ == "__main__":
