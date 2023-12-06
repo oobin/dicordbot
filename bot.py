@@ -41,7 +41,7 @@ def main():
 
         if bot.user in message.mentions:
             async with message.channel.typing():
-                if len(conversation) >= MAX_CONTEXT_QUESTIONS:
+                if len(conversation) >= MAX_CONTEXT_QUESTIONS + 1:
                     conversation.pop(1)
                 message_content = message.content.lstrip("<@0123456789> ")
                 conversation.append({"role": "user", "content": message_content})
@@ -61,7 +61,7 @@ def main():
                     await message.channel.send(entry)
                     time.sleep(1)
 
-                if len(conversation) >= MAX_CONTEXT_QUESTIONS:
+                if len(conversation) >= MAX_CONTEXT_QUESTIONS + 1:
                     conversation.pop(1)
                 conversation.append(
                     {
