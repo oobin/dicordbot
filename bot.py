@@ -28,7 +28,10 @@ def main():
     intents = discord.Intents.all()
     bot = discord.Client(command_prefix="!", intents=intents)
     ai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+<<<<<<< HEAD
     # conversation = [{"role": "system", "content": ""}]
+=======
+>>>>>>> dev
     conversation = [{"role": "system", "content": INSTRUCTIONS}]
 
     @bot.event
