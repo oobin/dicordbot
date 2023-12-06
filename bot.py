@@ -22,16 +22,17 @@ def main():
             return
 
         if bot.user in message.mentions:
-            response = ai_client.chat.completions.create(
-                model="gpt-3.5-turbo",
-                messages=[{"role": "user", "content": message.content}],
-                max_tokens=256,
-                temperature=0.5,
-                frequency_penalty=0,
-                presence_penalty=0,
-            )
+            async with message.channel.typing():
+                response = ai_client.chat.completions.create(
+                    model="gpt-3.5-turbo",
+                    messages=[{"role": "user", "content": message.content}],
+                    max_tokens=256,
+                    temperature=0.5,
+                    frequency_penalty=0,
+                    presence_penalty=0,
+                )
 
-            await message.channel.send(response.choices[0].message.content)
+                await message.channel.send(response.choices[0].message.content)
 
     if dev_mode:
         bot.run(os.getenv("DISCORD_DEV_TOKEN"))  # type: ignore
