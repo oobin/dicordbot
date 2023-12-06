@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from openai import OpenAI
 
 # ChatGPT options
-MAX_TOKENS = 720
+MAX_TOKENS = 512
 TEMPERATURE = 0.5
 FREQUENCY_PENALTY = 0
 PRESENCE_PENALTY = 0
@@ -42,9 +42,10 @@ def main():
             async with message.channel.typing():
                 if len(conversation) >= MAX_CONTEXT_QUESTIONS:
                     conversation.pop(0)
-                conversation.append({"role": "user", "content": message.content})
+                message_content = message.content.lstrip("<@0123456789> ")
+                conversation.append({"role": "user", "content": message_content})
                 response = ai_client.chat.completions.create(
-                    model="gpt-3.5-turbo",
+                    model="gpt-4-1106-preview",
                     messages=conversation,
                     max_tokens=MAX_TOKENS,
                     temperature=TEMPERATURE,
