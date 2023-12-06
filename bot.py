@@ -12,6 +12,8 @@ def main():
     ai_client = OpenAI()
     dev_mode = os.getenv("DEV_MODE")
 
+    conversation = []
+
     @bot.event
     async def on_ready():
         print(f"{bot.user} has connected to Discord.")
@@ -23,9 +25,10 @@ def main():
 
         if bot.user in message.mentions:
             async with message.channel.typing():
+                conversation.append({"role": "user", "content": message.content})
                 response = ai_client.chat.completions.create(
                     model="gpt-3.5-turbo",
-                    messages=[{"role": "user", "content": message.content}],
+                    messages=conversation,
                     max_tokens=256,
                     temperature=0.5,
                     frequency_penalty=0,
@@ -33,6 +36,13 @@ def main():
                 )
 
                 await message.channel.send(response.choices[0].message.content)
+                conversation.append(
+                    {
+                        "role": response.choices[0].message.role,
+                        "content": response.choices[0].message.content,
+                    }
+                )
+                print(conversation)
 
     if dev_mode:
         bot.run(os.getenv("DISCORD_DEV_TOKEN"))  # type: ignore
